@@ -1,0 +1,154 @@
+
+
+captive_portal:
+uart:
+
+
+
+
+- id: mod_bus
+  tx_pin: GPIO16
+  rx_pin: GPIO17
+  baud_rate: 9600
+  stop_bits: 1
+
+ 
+modbus:
+  #flow_control_pin: 23
+  uart_id: mod_bus
+  id: mod_bus_mppt
+
+modbus_controller:
+  - id: mppt
+    ## the Modbus device addr
+    address: 0x1
+    modbus_id: mod_bus_mppt
+    command_throttle: 200ms
+    setup_priority: -10
+    update_interval: 5s
+
+
+
+
+
+  
+
+sensor:
+#   - platform: modbus_controller
+#     modbus_controller_id: mppt
+    
+#     name: Rated Current
+#     address: 10009
+#     register_type: holding
+#     value_type: U_WORD
+#     register_count: 1
+#     filters:
+#       - multiply: 0.1  
+  - platform: modbus_controller
+    modbus_controller_id: mppt
+    
+    name: Charger Workstate
+    address: 15201
+    register_type: holding
+    value_type: U_WORD
+    register_count: 1
+#   - platform: modbus_controller
+#     modbus_controller_id: mppt
+    
+#     name: MPPT state
+#     address: 15202
+#     register_type: holding
+#     value_type: U_WORD
+#     register_count: 1
+
+#   - platform: modbus_controller
+#     modbus_controller_id: mppt
+    
+#     name: Charging state
+#     address: 15203
+#     register_type: holding
+#     value_type: U_WORD
+#     register_count: 1
+
+
+
+  - platform: modbus_controller
+    modbus_controller_id: mppt
+    id: pv_input_voltage
+    name: pv_input_voltage
+    address: 15205
+    unit_of_measurement: "V" ## for any other unit the value is returned in minutes
+    register_type: holding
+    value_type: U_WORD
+    register_count: 1
+
+    accuracy_decimals: 1
+    icon: mdi:sine-wave
+    filters:
+      - multiply: 0.1  
+  
+  - platform: modbus_controller
+    modbus_controller_id: mppt
+    id: batt_input_voltage
+    name: batt_input_voltage
+    address: 15206
+    unit_of_measurement: "V" ## for any other unit the value is returned in minutes
+    register_type: holding
+    value_type: U_WORD
+    register_count: 1
+
+    accuracy_decimals: 1
+    icon: mdi:sine-wave
+    filters:
+      - multiply: 0.1  
+  - platform: modbus_controller
+    modbus_controller_id: mppt
+    id: batt_input_current
+    name: batt_input_current
+    address: 15207
+    unit_of_measurement: "A" 
+    register_type: holding
+    value_type: U_WORD
+    register_count: 1
+    filters:
+      - multiply: 0.1
+    accuracy_decimals: 1
+
+  - platform: modbus_controller
+    modbus_controller_id: mppt
+    id: pv_input_power
+    name: pv_input_power
+    address: 15208
+    unit_of_measurement: "W" ## for any other unit the value is returned in minutes
+    register_type: holding
+    value_type: U_WORD
+    register_count: 1
+
+    accuracy_decimals: 1
+    icon: mdi:sine-wave
+
+  - platform: modbus_controller
+    modbus_controller_id: mppt
+
+    name: MPPT temperature
+    address: 15209
+    unit_of_measurement: "°C" ## for any other unit the value is returned in minutes
+    register_type: holding
+    value_type: U_WORD
+    register_count: 1
+
+
+  - platform: modbus_controller
+    modbus_controller_id: mppt
+
+    name: MPPT energy
+    address: 15217
+    unit_of_measurement: "kWh"
+    register_type: holding
+    value_type: U_WORD
+    register_count: 1
+
+
+
+
+
