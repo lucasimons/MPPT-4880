@@ -148,7 +148,39 @@ sensor:
     value_type: U_WORD
     register_count: 1
 
+number: 
+   
+  - platform: modbus_controller
 
+    name: MPPT Float Volatge 
+    address: 10104
+    value_type: U_WORD
+    register_type: holding
+    unit_of_measurement: "V"
+    icon: mdi:timer-sand
+    min_value: 24
+    max_value: 32
+    step: 1
+    lambda: "return  x * 0.1; "
+
+
+  - platform: modbus_controller
+    id: mppt_max_current
+    name: MPPT Corrente Max 
+    address: 10108
+    value_type: U_WORD
+    register_type: holding
+    unit_of_measurement: "A"
+    icon: mdi:timer-sand
+    min_value: 1
+    max_value: 80
+    step: 1
+    lambda: "return  x * 0.1; "
+    write_lambda: |-
+      ESP_LOGD("main","Modbus Number incoming value = %f",x);
+      uint16_t b_capacity = x*10  ;
+      payload.push_back(b_capacity);
+      return x  ;
 
 
 
