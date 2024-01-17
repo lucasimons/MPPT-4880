@@ -1,0 +1,85 @@
+#### Doesn't work
+
+
+number: 
+   
+  - platform: modbus_controller
+
+    name: MPPT Float Volatge 
+    address: 10104
+    value_type: U_WORD
+    register_type: holding
+    unit_of_measurement: "V"
+    icon: mdi:timer-sand
+    min_value: 24
+    max_value: 32
+    step: 1
+    lambda: "return  x * 0.1; "
+
+
+  - platform: modbus_controller
+    id: mppt_max_current
+    name: MPPT Corrente Max 
+    address: 10108
+    value_type: U_WORD
+    register_type: holding
+    unit_of_measurement: "A"
+    icon: mdi:timer-sand
+    min_value: 1
+    max_value: 80
+    step: 1
+    lambda: "return  x * 0.1; "
+    write_lambda: |-
+      ESP_LOGD("main","Modbus Number incoming value = %f",x);
+      uint16_t b_capacity = x*10  ;
+      payload.push_back(b_capacity);
+      return x  ;
+
+
+
+### Test script
+
+
+number: 
+
+  - platform: template
+    id: high_voltage_disconnect_number
+    name: ${name}_high_voltage_disconnect_number
+    unit_of_measurement: "V"
+    icon: mdi:sine-wave
+    optimistic: true
+    min_value: 56.40
+    max_value: 58.60
+    step:  0.1
+    initial_value: 58.40
+    restore_value: true
+    mode: 'slider'
+    on_value:
+      then:       
+        - script.execute: write_9003_900E_registers
+
+#write the register 9003 to 900E https://github.com/SeByDocKy/myESPhome/blob/main/code/tracer_6420an.yaml
+
+script:
+  - id: write_9003_900E_registers
+    then:
+      - lambda: |-
+          esphome::modbus_controller::ModbusController *controller = id(epever);
+          std::vector<uint16_t> battery_settings(12);
+          battery_settings[0]  = uint16_t((id(high_voltage_disconnect_number).state)*100);
+          battery_settings[1]  = uint16_t((id(charging_limit_voltage_number).state)*100);
+          battery_settings[2]  = uint16_t((id(over_voltage_reconnect_number).state)*100);
+          battery_settings[3]  = uint16_t((id(equalization_voltage_number).state)*100);
+          battery_settings[4]  = uint16_t((id(boost_voltage_number).state)*100);
+          battery_settings[5]  = uint16_t((id(float_voltage_number).state)*100);
+          battery_settings[6]  = uint16_t((id(boost_reconnect_voltage_number).state)*100);
+          battery_settings[7]  = uint16_t((id(low_voltage_reconnect_number).state)*100);
+          battery_settings[8]  = uint16_t((id(under_voltage_recover_number).state)*100);
+          battery_settings[9]  = uint16_t((id(under_voltage_warning_number).state)*100);
+          battery_settings[10] = uint16_t(id(low_voltage_disconnect_number).state*100);
+          battery_settings[11] = uint16_t(id(discharging_limit_voltage_number).state*100);
+          esphome::modbus_controller::ModbusCommandItem battery_command = esphome::modbus_controller::ModbusCommandItem::create_write_multiple_command(controller, 0x9003, battery_settings.size() ,
+                                                                                          battery_settings);
+          delay(200);
+          controller->queue_command(battery_command);
+          delay(200);
