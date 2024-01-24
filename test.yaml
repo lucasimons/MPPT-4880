@@ -61,23 +61,15 @@ script:
       - lambda: |-
           esphome::modbus_controller::ModbusController *controller = id(mppt_modbus);
           std::vector<uint16_t> battery_settings(12);
-          battery_settings[0]  = uint16_t((id(high_voltage_disconnect_number).state)*100);
-          battery_settings[1]  = uint16_t((id(charging_limit_voltage_number).state)*100);
-          battery_settings[2]  = uint16_t((id(over_voltage_reconnect_number).state)*100);
-          battery_settings[3]  = uint16_t((id(equalization_voltage_number).state)*100);
-          battery_settings[4]  = uint16_t((id(boost_voltage_number).state)*100);
-          battery_settings[5]  = uint16_t((id(float_voltage_number).state)*100);
-          battery_settings[6]  = uint16_t((id(boost_reconnect_voltage_number).state)*100);
-          battery_settings[7]  = uint16_t((id(low_voltage_reconnect_number).state)*100);
-          battery_settings[8]  = uint16_t((id(under_voltage_recover_number).state)*100);
-          battery_settings[9]  = uint16_t((id(under_voltage_warning_number).state)*100);
-          battery_settings[10] = uint16_t(id(low_voltage_disconnect_number).state*100);
-          battery_settings[11] = uint16_t(id(discharging_limit_voltage_number).state*100);
-          esphome::modbus_controller::ModbusCommandItem battery_command = esphome::modbus_controller::ModbusCommandItem::create_write_multiple_command(controller, 0x9003, battery_settings.size() ,
+
+          battery_settings[0]  = uint16_t((id(float_voltage_number).state)*10);
+
+          esphome::modbus_controller::ModbusCommandItem battery_command = esphome::modbus_controller::ModbusCommandItem::create_write_multiple_command(controller, 10104, battery_settings.size() ,
                                                                                           battery_settings);
           delay(200);
           controller->queue_command(battery_command);
           delay(200);
+
 
 
 ### Test script by SeByDocKy
