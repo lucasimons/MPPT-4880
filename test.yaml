@@ -39,7 +39,7 @@ number:
 number: 
 
   - platform: template
-    id: float_volatge_number
+    id: float_voltage_number
     name: MPPT Float Volatge 
     unit_of_measurement: "V"
     icon: mdi:sine-wave
