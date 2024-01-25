@@ -10,4 +10,3 @@ Modbus sensor  for esphome
 
 ![image](https://user-images.githubusercontent.com/67467751/214369978-3a9cb7b4-cefd-47de-ae7e-7a05acf1d71e.png)
 
-![image](https://user-images.githubusercontent.com/67467751/214783285-9154829c-c93f-4ebe-adef-c31393abc48b.png)
